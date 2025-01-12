@@ -1,5 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   StyleSheet,
@@ -47,7 +46,7 @@ const WeightEntryForm = () => {
     try {
       setWeightData(data);
 
-      Alert.alert('Entry saved successfully!');
+      Alert.alert('Successfully Save!');
     } catch (error) {
       console.error('Error saving entry:', error);
     }
@@ -108,7 +107,7 @@ const WeightEntryForm = () => {
 
       <TouchableOpacity style={styles.button} onPress={saveEntry}>
         <ThemeText style={{color: '#fff'}} variant="subtitle">
-          Save Entry
+          Save
         </ThemeText>
       </TouchableOpacity>
 
