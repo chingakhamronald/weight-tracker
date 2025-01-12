@@ -13,24 +13,19 @@ import ThemeText from './ThemeText';
 import Separator from './Separator';
 import ThemeView from './ThemeView';
 import {COLOR} from '../constant';
-
-type FormData = {
-  weight: string;
-  notes: string;
-  date: Date;
-  time: Date;
-};
+import {useWeightStore, WeightEntry} from '../store';
 
 const WeightEntryForm = () => {
-  const [data, setData] = useState<FormData>({
+  const [data, setData] = useState<WeightEntry>({
     weight: '0',
-    notes: '',
     date: new Date(),
     time: new Date(),
   });
 
   const [mode, setMode] = useState<'date' | 'time'>('date');
   const [show, setShow] = useState(false);
+
+  const {setWeightData} = useWeightStore(state => state);
 
   const onChange = (_: any, selectedDate?: Date) => {
     setShow(false);
@@ -50,37 +45,13 @@ const WeightEntryForm = () => {
 
   const saveEntry = async () => {
     try {
-      const storedData = await AsyncStorage.getItem('weightEntries');
-      const entries = storedData ? JSON.parse(storedData) : [];
-      entries.push({...data});
-      await AsyncStorage.setItem('weightEntries', JSON.stringify(entries));
+      setWeightData(data);
+
       Alert.alert('Entry saved successfully!');
     } catch (error) {
       console.error('Error saving entry:', error);
     }
   };
-
-  useEffect(() => {
-    const loadPreviousData = async () => {
-      try {
-        const storedData = await AsyncStorage.getItem('weightEntries');
-        if (storedData) {
-          const entries = JSON.parse(storedData);
-          const lastEntry = entries[entries.length - 1];
-          if (lastEntry && lastEntry.weight) {
-            setData(prev => ({
-              ...prev,
-              weight: lastEntry.weight,
-            }));
-          }
-        }
-      } catch (error) {
-        console.error('Error loading previous data:', error);
-      }
-    };
-
-    loadPreviousData();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -118,7 +89,7 @@ const WeightEntryForm = () => {
       </ThemeView>
       <Separator />
 
-      <View style={{marginVertical: 10, paddingHorizontal: 10}}>
+      {/* <View style={{marginVertical: 10, paddingHorizontal: 10}}>
         <ThemeText variant="subtitle">Notes</ThemeText>
         <View style={styles.inputContainer}>
           <TextInput
@@ -133,7 +104,7 @@ const WeightEntryForm = () => {
             style={styles.input}
           />
         </View>
-      </View>
+      </View> */}
 
       <TouchableOpacity style={styles.button} onPress={saveEntry}>
         <ThemeText style={{color: '#fff'}} variant="subtitle">

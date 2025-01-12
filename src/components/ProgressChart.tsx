@@ -1,59 +1,35 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useState} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import moment from 'moment';
+import {useWeightStore} from '../store';
 
 const ProgressChart = () => {
-  const [weightData, setWeightData] = useState<number[]>([]);
-  const [labelsData, setLabelsData] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const screenWidth = Dimensions.get('window').width;
+  const {weightData: weightStore} = useWeightStore(state => state);
+
+  const weightData = weightStore.map(e => parseInt(e.weight));
+
+  const labelsData = weightStore.map((e: any) => {
+    const dateLabels = moment(e?.date).format('DD/MM');
+    return dateLabels;
+  });
+
+  const defaultLabels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'];
+
+  const defaultWeights = [0, 0, 0, 0, 0];
 
   const data = {
-    labels: labelsData.slice(-5),
+    labels: labelsData.length > 0 ? labelsData.slice(-5) : defaultLabels,
     datasets: [
       {
-        data: weightData.slice(-5),
+        data: weightData.length > 0 ? weightData.slice(-5) : defaultWeights,
         color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
         strokeWidth: 3,
       },
     ],
     legend: ['Weight Progress'],
   };
-
-  useEffect(() => {
-    const fetchWeightEntries = async () => {
-      try {
-        const storedData = await AsyncStorage.getItem('weightEntries');
-        if (storedData) {
-          const entries = JSON.parse(storedData);
-
-          const weights = entries.map((entry: any) => parseFloat(entry.weight));
-          const labels = entries.map((e: any) => {
-            const dateLabels = moment(e?.date).format('DD/MM');
-            return dateLabels;
-          });
-          setLabelsData(labels);
-          setWeightData(weights);
-        }
-      } catch (error) {
-        console.error('Error fetching weight entries:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWeightEntries();
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
