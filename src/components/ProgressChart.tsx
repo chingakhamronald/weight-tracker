@@ -15,7 +15,7 @@ const ProgressChart = () => {
     datasets: [
       {
         data: weightData.slice(-5),
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
         strokeWidth: 3,
       },
     ],
@@ -74,7 +74,7 @@ export default ProgressChart;
 const styles = StyleSheet.create({
   container: {
     margin: 4,
-    borderRadius: 4,
+    borderRadius: 15,
     backgroundColor: '#B2C9AD',
   },
 });
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
 const chartConfig = {
   backgroundGradientFromOpacity: 0,
   backgroundGradientToOpacity: 0,
-  color: () => `rgba(255, 255, 255, 1)` /* Avoid opacity */,
+  color: () => `rgba(0, 0, 0, 1)` /* Avoid opacity */,
   strokeWidth: 3,
   barPercentage: 0.5,
   useShadowColorFromDataset: false,

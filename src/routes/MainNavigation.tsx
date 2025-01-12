@@ -4,6 +4,7 @@ import {
 } from '@react-navigation/stack';
 import {NavProps} from './type';
 import Home from '../screen/Home';
+import Navbar from '../components/Navbar';
 
 export type MainList = {
   Home: undefined;
@@ -20,7 +21,8 @@ const MainNavigation = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        header: () => <Navbar />,
       }}
       initialRouteName="Home">
       <Stack.Screen name="Home" component={Home} />

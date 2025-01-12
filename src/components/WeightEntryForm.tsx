@@ -10,6 +10,8 @@ import {
   View,
 } from 'react-native';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import ThemeText from './ThemeText';
+import Separator from './Separator';
 
 type FormData = {
   weight: string;
@@ -57,38 +59,68 @@ const WeightEntryForm = () => {
     }
   };
 
+  useEffect(() => {
+    const loadPreviousData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('weightEntries');
+        if (storedData) {
+          const entries = JSON.parse(storedData);
+          const lastEntry = entries[entries.length - 1];
+          if (lastEntry && lastEntry.weight) {
+            setData(prev => ({
+              ...prev,
+              weight: lastEntry.weight,
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Error loading previous data:', error);
+      }
+    };
+
+    loadPreviousData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.flex}>
-        <Text>Weight (kg)</Text>
+        <ThemeText variant="subtitle">Weight (kg)</ThemeText>
         <TextInput
           value={data.weight}
-          onChangeText={text => setData(prev => ({...prev, weight: text}))}
+          onChangeText={e => setData(prev => ({...prev, weight: e}))}
           keyboardType="numeric"
+          style={{fontSize: 18, fontWeight: '600', color: '#555'}}
         />
       </View>
+      <Separator />
 
       <View style={styles.flex}>
-        <Text>Date</Text>
+        <ThemeText variant="subtitle">Date</ThemeText>
         <TouchableOpacity onPress={() => showMode('date')}>
-          <Text>{data.date.toLocaleDateString()}</Text>
+          <ThemeText variant="subtitle">
+            {data.date.toLocaleDateString()}
+          </ThemeText>
         </TouchableOpacity>
       </View>
+      <Separator />
 
       <View style={styles.flex}>
-        <Text>Time</Text>
+        <ThemeText variant="subtitle">Time</ThemeText>
         <TouchableOpacity onPress={() => showMode('time')}>
-          <Text>{data.time.toLocaleTimeString()}</Text>
+          <ThemeText variant="subtitle">
+            {data.time.toLocaleTimeString()}
+          </ThemeText>
         </TouchableOpacity>
       </View>
+      <Separator />
 
       <View style={{marginVertical: 10}}>
-        <Text>Notes</Text>
+        <ThemeText variant="subtitle">Notes</ThemeText>
         <TextInput
           style={styles.input}
           placeholder="Enter notes"
           value={data.notes}
-          onChangeText={text => setData(prev => ({...prev, notes: text}))}
+          onChangeText={e => setData(prev => ({...prev, notes: e}))}
         />
       </View>
 
@@ -123,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 10,
+    paddingHorizontal: 10,
   },
 });
 
