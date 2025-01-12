@@ -1,3 +1,3 @@
 export const COLOR = {
-  primary: '66785F',
+  primary: '#66785F',
 };

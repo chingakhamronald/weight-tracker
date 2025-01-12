@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  Button,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +11,8 @@ import {
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import ThemeText from './ThemeText';
 import Separator from './Separator';
+import ThemeView from './ThemeView';
+import {COLOR} from '../constant';
 
 type FormData = {
   weight: string;
@@ -83,7 +84,10 @@ const WeightEntryForm = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.flex}>
+      <ThemeText variant="title" style={{textAlign: 'center'}}>
+        Add Weight
+      </ThemeText>
+      <ThemeView>
         <ThemeText variant="subtitle">Weight (kg)</ThemeText>
         <TextInput
           value={data.weight}
@@ -91,42 +95,51 @@ const WeightEntryForm = () => {
           keyboardType="numeric"
           style={{fontSize: 18, fontWeight: '600', color: '#555'}}
         />
-      </View>
+      </ThemeView>
       <Separator />
 
-      <View style={styles.flex}>
+      <ThemeView>
         <ThemeText variant="subtitle">Date</ThemeText>
         <TouchableOpacity onPress={() => showMode('date')}>
           <ThemeText variant="subtitle">
             {data.date.toLocaleDateString()}
           </ThemeText>
         </TouchableOpacity>
-      </View>
+      </ThemeView>
       <Separator />
 
-      <View style={styles.flex}>
+      <ThemeView>
         <ThemeText variant="subtitle">Time</ThemeText>
         <TouchableOpacity onPress={() => showMode('time')}>
           <ThemeText variant="subtitle">
             {data.time.toLocaleTimeString()}
           </ThemeText>
         </TouchableOpacity>
-      </View>
+      </ThemeView>
       <Separator />
 
-      <View style={{marginVertical: 10}}>
+      <View style={{marginVertical: 10, paddingHorizontal: 10}}>
         <ThemeText variant="subtitle">Notes</ThemeText>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter notes"
-          value={data.notes}
-          onChangeText={e => setData(prev => ({...prev, notes: e}))}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            editable
+            multiline
+            numberOfLines={4}
+            maxLength={150}
+            placeholder="Enter your notes here..."
+            placeholderTextColor="#aaa"
+            onChangeText={e => setData(prev => ({...prev, notes: e}))}
+            value={data.notes}
+            style={styles.input}
+          />
+        </View>
       </View>
 
-      <View style={{marginVertical: 15}}>
-        <Button title="Save Entry" onPress={saveEntry} />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={saveEntry}>
+        <ThemeText style={{color: '#fff'}} variant="subtitle">
+          Save Entry
+        </ThemeText>
+      </TouchableOpacity>
 
       {show && (
         <RNDateTimePicker
@@ -143,19 +156,46 @@ const WeightEntryForm = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingVertical: 20,
+    backgroundColor: '#f4f4f4',
+    borderRadius: 8,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 4,
+    elevation: 2,
   },
-  input: {
+  inputContainer: {
+    marginVertical: 10,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    backgroundColor: '#f9f9f9',
+    borderColor: '#ddd',
   },
-  flex: {
-    flexDirection: 'row',
+  input: {
+    fontSize: 16,
+    color: '#333',
+    textAlignVertical: 'top',
+    height: 100,
+  },
+  button: {
+    backgroundColor: COLOR.primary,
+    paddingVertical: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });
 

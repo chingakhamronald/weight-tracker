@@ -1,6 +1,7 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import ThemeText from './ThemeText';
+import NotificationBell from '../assets/image/notification-bell-svgrepo-com.svg';
 
 const Navbar = () => {
   return (
@@ -10,7 +11,8 @@ const Navbar = () => {
         style={styles.avatar}
       />
       <ThemeText variant="title">myfittrack</ThemeText>
-      <Text>Navbar</Text>
+
+      <NotificationBell width={50} height={25} />
     </View>
   );
 };
