@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Button,
@@ -11,40 +11,47 @@ import {
 } from 'react-native';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 
+type FormData = {
+  weight: string;
+  notes: string;
+  date: Date;
+  time: Date;
+};
+
 const WeightEntryForm = () => {
-  const [weight, setWeight] = useState('0');
-  const [notes, setNotes] = useState('');
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [data, setData] = useState<FormData>({
+    weight: '0',
+    notes: '',
+    date: new Date(),
+    time: new Date(),
+  });
+
   const [mode, setMode] = useState<'date' | 'time'>('date');
   const [show, setShow] = useState(false);
 
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
+  const onChange = (_: any, selectedDate?: Date) => {
     setShow(false);
-    setDate(currentDate);
+    if (selectedDate) {
+      if (mode === 'date') {
+        setData(prev => ({...prev, date: selectedDate}));
+      } else {
+        setData(prev => ({...prev, time: selectedDate}));
+      }
+    }
   };
 
-  const showMode = (currentMode: any) => {
-    setShow(true);
+  const showMode = (currentMode: 'date' | 'time') => {
     setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
+    setShow(true);
   };
 
   const saveEntry = async () => {
-    const newEntry = {weight, notes, date};
     try {
       const storedData = await AsyncStorage.getItem('weightEntries');
       const entries = storedData ? JSON.parse(storedData) : [];
-      entries.push(newEntry);
+      entries.push({...data});
       await AsyncStorage.setItem('weightEntries', JSON.stringify(entries));
-      Alert.alert('Entry saved');
+      Alert.alert('Entry saved successfully!');
     } catch (error) {
       console.error('Error saving entry:', error);
     }
@@ -53,41 +60,45 @@ const WeightEntryForm = () => {
   return (
     <View style={styles.container}>
       <View style={styles.flex}>
-        <Text>Weight</Text>
+        <Text>Weight (kg)</Text>
         <TextInput
-          value={weight}
-          onChangeText={setWeight}
+          value={data.weight}
+          onChangeText={text => setData(prev => ({...prev, weight: text}))}
           keyboardType="numeric"
-          style={styles.input}
         />
       </View>
+
       <View style={styles.flex}>
         <Text>Date</Text>
         <TouchableOpacity onPress={() => showMode('date')}>
-          <Text>{date.toLocaleDateString()}</Text>
+          <Text>{data.date.toLocaleDateString()}</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.flex}>
         <Text>Time</Text>
         <TouchableOpacity onPress={() => showMode('time')}>
-          <Text>{date.toLocaleDateString()}</Text>
+          <Text>{data.time.toLocaleTimeString()}</Text>
         </TouchableOpacity>
       </View>
-      <View>
+
+      <View style={{marginVertical: 10}}>
         <Text>Notes</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter Notes"
-          value={notes}
-          onChangeText={setNotes}
+          placeholder="Enter notes"
+          value={data.notes}
+          onChangeText={text => setData(prev => ({...prev, notes: text}))}
         />
       </View>
-      <View style={{height: 15}} />
-      <Button title="Save Entry" onPress={saveEntry} />
+
+      <View style={{marginVertical: 15}}>
+        <Button title="Save Entry" onPress={saveEntry} />
+      </View>
 
       {show && (
         <RNDateTimePicker
-          value={date}
+          value={mode === 'date' ? data.date : data.time}
           mode={mode}
           display="default"
           onChange={onChange}
@@ -102,11 +113,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
-  button: {
-    height: 60,
-  },
   input: {
     padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 5,
   },
   flex: {

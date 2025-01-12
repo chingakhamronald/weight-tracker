@@ -1,18 +1,18 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import ProgressChart from '../components/ProgressChart';
 import Navbar from '../components/Navbar';
 import WeightEntryForm from '../components/WeightEntryForm';
 
 const Home = () => {
   return (
-    <>
+    <ScrollView>
       <Navbar />
       <View style={styles.container}>
         <ProgressChart />
         <WeightEntryForm />
       </View>
-    </>
+    </ScrollView>
   );
 };
 

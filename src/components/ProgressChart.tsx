@@ -1,21 +1,59 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
+import moment from 'moment';
 
 const ProgressChart = () => {
+  const [weightData, setWeightData] = useState<number[]>([]);
+  const [labelsData, setLabelsData] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const screenWidth = Dimensions.get('window').width;
 
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    labels: labelsData.slice(-5),
     datasets: [
       {
-        data: [20, 45, 28, 80, 99, 43],
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-        strokeWidth: 3, // optional
+        data: weightData.slice(-5),
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 3,
       },
     ],
-    legend: ['Weight Progress'], // optional
+    legend: ['Weight Progress'],
   };
+
+  useEffect(() => {
+    const fetchWeightEntries = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('weightEntries');
+        if (storedData) {
+          const entries = JSON.parse(storedData);
+
+          const weights = entries.map((entry: any) => parseFloat(entry.weight));
+          const labels = entries.map((e: any) => {
+            const dateLabels = moment(e?.date).format('DD/MM');
+            return dateLabels;
+          });
+          setLabelsData(labels);
+          setWeightData(weights);
+        }
+      } catch (error) {
+        console.error('Error fetching weight entries:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeightEntries();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
