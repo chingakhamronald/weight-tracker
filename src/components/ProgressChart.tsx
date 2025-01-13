@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useCallback} from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import moment from 'moment';
@@ -21,7 +21,7 @@ const ProgressChart = () => {
 
   const defaultWeights = [0, 0, 0, 0, 0];
 
-  const targetWeight = 50;
+  const targetWeight = 60;
 
   const chartHeight = 256;
 
@@ -37,6 +37,42 @@ const ProgressChart = () => {
     legend: ['Weight Progress'],
   };
 
+  const tragetLine = useCallback(() => {
+    if (weightData.length === 0) return null;
+
+    const maxWeight = Math.max(...weightData);
+    const minWeight = Math.min(...weightData);
+
+    const yPosition =
+      chartHeight -
+      ((targetWeight - minWeight) / (maxWeight - minWeight)) *
+        (chartHeight - 16);
+
+    console.log(yPosition);
+    return (
+      <Svg>
+        <Line
+          x1={'65'}
+          x2={screenWidth - 30}
+          y1={yPosition}
+          y2={yPosition}
+          stroke="black"
+          strokeWidth="1"
+          strokeDasharray="4 4"
+        />
+
+        <Text
+          x={screenWidth - 120}
+          y={yPosition - 5}
+          fill="black"
+          fontSize="12"
+          fontWeight="bold">
+          Target: {targetWeight} kg
+        </Text>
+      </Svg>
+    );
+  }, [weightData]);
+
   return (
     <View style={styles.container}>
       <LineChart
@@ -51,59 +87,13 @@ const ProgressChart = () => {
         }}
         yAxisLabel="Kg"
         bezier
-        decorator={() => (
-          <TragetLine
-            weightData={weightData}
-            chartHeight={chartHeight}
-            targetWeight={targetWeight}
-            screenWidth={screenWidth}
-          />
-        )}
+        decorator={tragetLine}
       />
     </View>
   );
 };
 
 export default ProgressChart;
-
-const TragetLine: FC<{
-  weightData: any;
-  chartHeight: number;
-  targetWeight: number;
-  screenWidth: number;
-}> = ({chartHeight, screenWidth, targetWeight, weightData}) => {
-  if (weightData.length === 0) return null;
-
-  const maxWeight = Math.max(...weightData);
-  const minWeight = Math.min(...weightData);
-
-  const yPosition =
-    chartHeight -
-    ((targetWeight - minWeight) / (maxWeight - minWeight)) * (chartHeight - 16);
-
-  return (
-    <Svg>
-      <Line
-        x1={'65'}
-        x2={screenWidth - 30}
-        y1={yPosition}
-        y2={yPosition}
-        stroke="black"
-        strokeWidth="1"
-        strokeDasharray="4 4"
-      />
-
-      <Text
-        x={screenWidth - 120}
-        y={yPosition - 5}
-        fill="black"
-        fontSize="12"
-        fontWeight="bold">
-        Target: {targetWeight} kg
-      </Text>
-    </Svg>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
