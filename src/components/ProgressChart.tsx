@@ -36,41 +36,41 @@ const ProgressChart = () => {
     legend: ['Weight Progress'],
   };
 
-  const tragetLine = useCallback(() => {
-    if (weightData.length === 0) return null;
+  // const tragetLine = useCallback(() => {
+  //   if (weightData.length === 0) return null;
 
-    const maxWeight = Math.max(...weightData);
-    const minWeight = Math.min(...weightData);
+  //   const maxWeight = Math.max(...weightData);
+  //   const minWeight = Math.min(...weightData);
 
-    const yPosition =
-      chartHeight -
-      ((targetWeight - minWeight) / (maxWeight - minWeight)) *
-        (chartHeight - 16);
+  //   const yPosition =
+  //     chartHeight -
+  //     ((targetWeight - minWeight) / (maxWeight - minWeight)) *
+  //       (chartHeight - 16);
 
-    console.log(yPosition);
-    return (
-      <Svg>
-        <Line
-          x1={'65'}
-          x2={screenWidth - 30}
-          y1={yPosition}
-          y2={yPosition}
-          stroke="black"
-          strokeWidth="1"
-          strokeDasharray="4 4"
-        />
+  //   console.log(yPosition);
+  //   return (
+  //     <Svg>
+  //       <Line
+  //         x1={'65'}
+  //         x2={screenWidth - 30}
+  //         y1={yPosition}
+  //         y2={yPosition}
+  //         stroke="black"
+  //         strokeWidth="1"
+  //         strokeDasharray="4 4"
+  //       />
 
-        <Text
-          x={screenWidth - 120}
-          y={yPosition - 5}
-          fill="black"
-          fontSize="12"
-          fontWeight="bold">
-          Target: {targetWeight} kg
-        </Text>
-      </Svg>
-    );
-  }, [weightData]);
+  //       <Text
+  //         x={screenWidth - 120}
+  //         y={yPosition - 5}
+  //         fill="black"
+  //         fontSize="12"
+  //         fontWeight="bold">
+  //         Target: {targetWeight} kg
+  //       </Text>
+  //     </Svg>
+  //   );
+  // }, [weightData]);
 
   return (
     <View style={styles.container}>
@@ -85,7 +85,7 @@ const ProgressChart = () => {
           return String(decimal);
         }}
         bezier
-        decorator={tragetLine}
+        // decorator={tragetLine}
       />
     </View>
   );
