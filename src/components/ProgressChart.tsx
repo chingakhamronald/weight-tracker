@@ -4,7 +4,6 @@ import {LineChart} from 'react-native-chart-kit';
 import moment from 'moment';
 import {useWeightStore} from '../store';
 import Svg, {Line, Text} from 'react-native-svg';
-import {chartConfig} from '../constant';
 
 const ProgressChart = () => {
   const screenWidth = Dimensions.get('window').width;
@@ -85,7 +84,6 @@ const ProgressChart = () => {
           const decimal = Math.floor(Number(c));
           return String(decimal);
         }}
-        yAxisLabel="Kg"
         bezier
         decorator={tragetLine}
       />
@@ -102,3 +100,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#B2C9AD',
   },
 });
+
+const chartConfig = {
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientToOpacity: 0,
+  color: () => `rgba(0, 0, 0, 1)`,
+  labelColor: () => `rgba(0, 0, 0, 1)`,
+  strokeWidth: 1,
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false,
+  propsForBackgroundLines: {
+    strokeDasharray: '',
+    stroke: 'rgba(0, 0, 0, 0.1)',
+  },
+  propsForVerticalLabels: {
+    strokeWidth: 0,
+  },
+  propsForHorizontalLabels: {
+    strokeWidth: 0.3,
+    border: 'translucent-scale',
+    fontSize: 14,
+  },
+
+  /* Adjusts the fill of the chart */
+  fillShadowGradient: 'transparent',
+  fillShadowGradientOpacity: 0,
+  fillShadowGradientFromOffset: 0,
+  fillShadowGradientTo: 'transparent',
+  fillShadowGradientToOpacity: 0,
+};
