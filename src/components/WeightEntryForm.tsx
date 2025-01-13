@@ -15,16 +15,21 @@ import {COLOR} from '../constant';
 import {useWeightStore, WeightEntry} from '../store';
 
 const WeightEntryForm = () => {
+  const {weightData, setWeightData} = useWeightStore(state => state);
+
+  const initialWeight =
+    weightData && weightData.length > 0
+      ? weightData[weightData.length - 1].weight.toString()
+      : '0';
+
   const [data, setData] = useState<WeightEntry>({
-    weight: '0',
+    weight: initialWeight,
     date: new Date(),
     time: new Date(),
   });
 
   const [mode, setMode] = useState<'date' | 'time'>('date');
   const [show, setShow] = useState(false);
-
-  const {setWeightData} = useWeightStore(state => state);
 
   const onChange = (_: any, selectedDate?: Date) => {
     setShow(false);
